@@ -1,0 +1,245 @@
+/* Fonte */
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Rajdhani', sans-serif;
+    background:
+        radial-gradient(circle at top, #2b0a0a 0%, #111 35%, #050505 100%);
+    color: #f5f5f5;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#root {
+    width: 100%;
+}
+
+/* Container */
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* Título */
+.titulo {
+    font-size: 4rem;
+    text-transform: uppercase;
+    letter-spacing: 10px;
+    color: #d62020;
+
+    text-shadow:
+        0 0 8px #8b0000,
+        0 0 20px #500000,
+        0 0 35px #300000;
+}
+
+/* Botões */
+.btnNav {
+    display: block;
+    margin: auto;
+
+    width: 260px;
+    padding: 15px;
+
+    background: transparent;
+    color: #e5e5e5;
+
+    border: 2px solid #8b0000;
+
+    font-size: 1.2rem;
+    font-family: inherit;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+
+    cursor: pointer;
+
+    transition: .25s;
+}
+
+.btnNav:hover {
+    background: #8b0000;
+    color: white;
+
+    box-shadow:
+        0 0 15px #8b0000,
+        0 0 30px #5a0000;
+
+    transform: scale(1.03);
+}
+
+.btnNav:active {
+    transform: scale(.98);
+}
+
+/* Linhas decorativas */
+header::after {
+    content: "";
+    display: block;
+
+    width: 350px;
+    height: 2px;
+
+    margin: 20px auto;
+
+    background: linear-gradient(
+        to right,
+        transparent,
+        #8b0000,
+        transparent
+    );
+}
+
+/* inventario */
+/* Painel principal */
+
+.painel{
+    width: 90%;
+    max-width: 900px;
+
+    margin: auto;
+
+    background: rgba(15,15,15,.9);
+
+    border: 2px solid #8b0000;
+
+    padding: 30px;
+
+    box-shadow:
+        0 0 20px rgba(139,0,0,.4);
+}
+
+/* Formulário */
+
+.formulario{
+    display:flex;
+    gap:15px;
+    margin-bottom:30px;
+}
+
+.formulario input{
+    flex:1;
+
+    background:#111;
+
+    border:1px solid #700;
+
+    color:white;
+
+    padding:12px;
+
+    font-family:inherit;
+    font-size:18px;
+}
+
+.formulario input:focus{
+    outline:none;
+
+    border-color:#d62020;
+
+    box-shadow:0 0 10px #8b0000;
+}
+
+.formulario input[type="number"]{
+    max-width:90px;
+    text-align:center;
+}
+
+/* Lista */
+
+.listaItens{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+/* Item */
+
+.itemInventario{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:18px;
+
+    border-left:5px solid #8b0000;
+
+    background:#161616;
+
+    transition:.2s;
+}
+
+.itemInventario:hover{
+
+    background:#1d1d1d;
+
+    transform:translateX(5px);
+}
+
+.itemInventario h3{
+    margin:0;
+
+    text-transform:uppercase;
+
+    letter-spacing:2px;
+
+    color:#fff;
+}
+
+.itemInventario p{
+    margin-top:5px;
+    color:#bdbdbd;
+}
+
+/* Botão remover */
+
+.btnInterativo{
+
+    width:130px;
+
+    background:#3b0000;
+
+    border:1px solid #8b0000;
+}
+
+.btnExcluir:hover{
+    background:#8b0000;
+}
+
+/* Botão voltar */
+
+.btnNav{
+
+    margin-top:30px;
+
+    width:220px;
+
+    display:block;
+
+    margin-left:auto;
+
+    margin-right:auto;
+}
+
+.controlesQuantidade{
+    display:flex;
+    gap:8px;
+    margin-top:10px;
+}
+
+.controlesQuantidade button{
+    width:60px;
+    padding:8px;
+    font-size:16px;
+}

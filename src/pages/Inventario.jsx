@@ -1,0 +1,184 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabase";
+import './Geral.css'
+
+export default function Inventario() {
+  const navigate = useNavigate();
+  const [itens, setItens] = useState([]);
+  const [nome, setNome] = useState("");
+  const [quantidade, setQuantidade] = useState(1);
+
+  async function carregarItens() {
+    const { data, error } = await supabase
+      .from("inventario")
+      .select("*")
+      .order("nome");
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    setItens(data);
+  }
+
+  async function alterarQuantidade(item, valor) {
+    const novaQuantidade = item.quantidade + valor;
+
+    // Não permite valores negativos
+    if (novaQuantidade < 0) return;
+
+    const { error } = await supabase
+      .from("inventario")
+      .update({
+        quantidade: novaQuantidade,
+      })
+      .eq("id", item.id);
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    carregarItens();
+  }
+
+  async function adicionarItem() {
+    if (!nome.trim()) return;
+
+    if (quantidade < 0) {
+      alert("A quantidade não pode ser negativa.");
+      return;
+    }
+
+    const nomeLimpo = nome.trim();
+
+    // Verifica se o item já existe
+    const { data: itemExistente, error: erroBusca } = await supabase
+      .from("inventario")
+      .select("*")
+      .ilike("nome", nomeLimpo)
+      .maybeSingle();
+
+    if (erroBusca) {
+      console.error(erroBusca);
+      return;
+    }
+
+    if (itemExistente) {
+      // Atualiza a quantidade somando a existente
+      const { error: erroUpdate } = await supabase
+        .from("inventario")
+        .update({
+          quantidade: itemExistente.quantidade + quantidade,
+        })
+        .eq("id", itemExistente.id);
+
+      if (erroUpdate) {
+        console.error(erroUpdate);
+        return;
+      }
+    } else {
+      // Insere um novo item
+      const { error: erroInsert } = await supabase
+        .from("inventario")
+        .insert({
+          nome: nomeLimpo,
+          quantidade,
+        });
+
+      if (erroInsert) {
+        console.error(erroInsert);
+        return;
+      }
+    }
+
+    setNome("");
+    setQuantidade(1);
+    carregarItens();
+  }
+
+  useEffect(() => {
+    carregarItens();
+  }, []);
+
+  async function removerItem(id) {
+    const { error } = await supabase
+      .from("inventario")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    carregarItens();
+  }
+
+  return (
+    <>
+      <header>
+        <h1 className="titulo">Inventário</h1>
+      </header>
+
+      <div className="painel">
+        <div className="formulario">
+          <input
+            placeholder="Nome do item"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+          />
+
+          <button onClick={adicionarItem}>
+            Adicionar
+          </button>
+        </div>
+
+        <div className="listaItens">
+          {itens.map((item) => (
+            <div
+              key={item.id}
+              className="itemInventario"
+            >
+              <div>
+                <h3>{item.nome}</h3>
+
+                <p>Quantidade: {item.quantidade}</p>
+
+                <div className="controlesQuantidade">
+                  <button
+                    onClick={() => alterarQuantidade(item, -1)}
+                  >
+                    -1
+                  </button>
+
+                  <button
+                    onClick={() => alterarQuantidade(item, 1)}
+                  >
+                    +1
+                  </button>
+                </div>
+              </div>
+
+              <button
+                className="btnInterativo"
+                onClick={() => removerItem(item.id)}
+              >
+                Remover
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <button
+        className="btnNav"
+        onClick={() => navigate("/")}
+      >
+        Voltar
+      </button>
+    </>
+  );
+}
