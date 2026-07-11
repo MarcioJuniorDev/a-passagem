@@ -41,12 +41,10 @@ header::after {
 
     margin: 20px auto;
 
-    background: linear-gradient(
-        to right,
-        transparent,
-        #d4a017,
-        transparent
-    );
+    background: linear-gradient(to right,
+            transparent,
+            #d4a017,
+            transparent);
 }
 
 .titulo {
@@ -263,6 +261,87 @@ button:active {
     width: 60px;
 
     padding: 8px;
+}
+
+.descricaoItem {
+    width: 100%;
+    margin-top: 8px;
+
+    background: #111;
+
+    border: 1px solid #8c6b00;
+
+    color: #ddd;
+
+    padding: 8px;
+
+    resize: vertical;
+
+    min-height: 70px;
+
+    font-family: inherit;
+}
+
+.descricaoItem:focus {
+    outline: none;
+
+    border-color: #ffd54a;
+
+    box-shadow: 0 0 8px #d4a017;
+}
+
+.cabecalhoItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.cabecalhoItem h3 {
+    margin: 0;
+}
+
+.acoesItem {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.acoesItem .btnInterativo {
+    width: 170px;
+}
+
+.descricaoItem {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+
+    background: #111;
+    color: #ddd;
+
+    border: 1px solid #8c6b00;
+    border-radius: 4px;
+
+    font-family: inherit;
+    font-size: 16px;
+    line-height: 1.5;
+
+    resize: none;
+    overflow: hidden;
+
+    min-height: 45px;
+}
+
+.descricaoItem:focus {
+    outline: none;
+
+    border-color: #ffd54a;
+
+    box-shadow: 0 0 8px #d4a017;
 }
 
 /* =======================

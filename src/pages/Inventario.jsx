@@ -8,6 +8,38 @@ export default function Inventario() {
   const [itens, setItens] = useState([]);
   const [nome, setNome] = useState("");
   const [quantidade, setQuantidade] = useState(1);
+  const [descricao, setDescricao] = useState("");
+  const [descricoesAbertas, setDescricoesAbertas] = useState(new Set());
+
+  function alternarDescricao(id) {
+    setDescricoesAbertas((anterior) => {
+      const novo = new Set(anterior);
+
+      if (novo.has(id)) {
+        novo.delete(id);
+      } else {
+        novo.add(id);
+      }
+
+      return novo;
+    });
+  }
+
+  async function alterarDescricao(item, novaDescricao) {
+    const { error } = await supabase
+      .from("inventario")
+      .update({
+        descricao: novaDescricao,
+      })
+      .eq("id", item.id);
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    carregarItens();
+  }
 
   async function carregarItens() {
     const { data, error } = await supabase
@@ -32,7 +64,8 @@ export default function Inventario() {
     const { error } = await supabase
       .from("inventario")
       .update({
-        quantidade: novaQuantidade,
+        quantidade: itemExistente.quantidade + quantidade,
+        descricao,
       })
       .eq("id", item.id);
 
@@ -86,6 +119,7 @@ export default function Inventario() {
         .insert({
           nome: nomeLimpo,
           quantidade,
+          descricao,
         });
 
       if (erroInsert) {
@@ -96,6 +130,7 @@ export default function Inventario() {
 
     setNome("");
     setQuantidade(1);
+    setDescricao("");
     carregarItens();
   }
 
@@ -131,6 +166,13 @@ export default function Inventario() {
             onChange={(e) => setNome(e.target.value)}
           />
 
+          <textarea
+            className="descricaoItem"
+            placeholder="Descrição do item"
+            value={descricao}
+            onChange={(e) => setDescricao(e.target.value)}
+          />
+
           <button onClick={adicionarItem}>
             Adicionar
           </button>
@@ -142,8 +184,28 @@ export default function Inventario() {
               key={item.id}
               className="itemInventario"
             >
-              <div>
+              <div style={{ flex: 1 }}>
                 <h3>{item.nome}</h3>
+
+                {descricoesAbertas.has(item.id) && (
+                  <textarea
+                    className="descricaoItem"
+                    defaultValue={item.descricao ?? ""}
+                    ref={(el) => {
+                      if (el) {
+                        el.style.height = "auto";
+                        el.style.height = `${el.scrollHeight}px`;
+                      }
+                    }}
+                    onInput={(e) => {
+                      e.target.style.height = "auto";
+                      e.target.style.height = `${e.target.scrollHeight}px`;
+                    }}
+                    onBlur={(e) =>
+                      alterarDescricao(item, e.target.value)
+                    }
+                  />
+                )}
 
                 <p>Quantidade: {item.quantidade}</p>
 
@@ -162,12 +224,23 @@ export default function Inventario() {
                 </div>
               </div>
 
-              <button
-                className="btnInterativo"
-                onClick={() => removerItem(item.id)}
-              >
-                Remover
-              </button>
+              <div className="acoesItem">
+                <button
+                  className="btnInterativo"
+                  onClick={() => alternarDescricao(item.id)}
+                >
+                  {descricoesAbertas.has(item.id)
+                    ? "Ocultar descrição"
+                    : "Mostrar descrição"}
+                </button>
+
+                <button
+                  className="btnInterativo"
+                  onClick={() => removerItem(item.id)}
+                >
+                  Remover
+                </button>
+              </div>
             </div>
           ))}
         </div>
