@@ -10,6 +10,7 @@ export default function Home() {
         <h1 className='titulo'>A Passagem</h1>
       </header>
       <button className='btnNav' onClick={() => navigate("/inventario")}>Inventário</button>
+      <button className='btnNav' onClick={() => navigate("/anotacoes")}>Anotações</button>
     </>
   )
 }

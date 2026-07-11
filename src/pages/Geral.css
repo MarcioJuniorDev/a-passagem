@@ -10,7 +10,7 @@
 body {
     font-family: 'Rajdhani', sans-serif;
     background:
-        radial-gradient(circle at top, #2b0a0a 0%, #111 35%, #050505 100%);
+        radial-gradient(circle at top, #4a3900 0%, #111 35%, #050505 100%);
     color: #f5f5f5;
     min-height: 100vh;
 
@@ -23,64 +23,15 @@ body {
     width: 100%;
 }
 
-/* Container */
+/* =======================
+   HEADER
+======================= */
+
 header {
     text-align: center;
     margin-bottom: 40px;
 }
 
-/* Título */
-.titulo {
-    font-size: 4rem;
-    text-transform: uppercase;
-    letter-spacing: 10px;
-    color: #d62020;
-
-    text-shadow:
-        0 0 8px #8b0000,
-        0 0 20px #500000,
-        0 0 35px #300000;
-}
-
-/* Botões */
-.btnNav {
-    display: block;
-    margin: auto;
-
-    width: 260px;
-    padding: 15px;
-
-    background: transparent;
-    color: #e5e5e5;
-
-    border: 2px solid #8b0000;
-
-    font-size: 1.2rem;
-    font-family: inherit;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-
-    cursor: pointer;
-
-    transition: .25s;
-}
-
-.btnNav:hover {
-    background: #8b0000;
-    color: white;
-
-    box-shadow:
-        0 0 15px #8b0000,
-        0 0 30px #5a0000;
-
-    transform: scale(1.03);
-}
-
-.btnNav:active {
-    transform: scale(.98);
-}
-
-/* Linhas decorativas */
 header::after {
     content: "";
     display: block;
@@ -93,153 +44,300 @@ header::after {
     background: linear-gradient(
         to right,
         transparent,
-        #8b0000,
+        #d4a017,
         transparent
     );
 }
 
-/* inventario */
-/* Painel principal */
+.titulo {
+    font-size: 4rem;
+    text-transform: uppercase;
+    letter-spacing: 10px;
+    color: #ffd54a;
 
-.painel{
+    text-shadow:
+        0 0 8px #d4a017,
+        0 0 20px #8f6b00,
+        0 0 35px #5c4500;
+}
+
+/* =======================
+   BOTÕES
+======================= */
+
+button {
+    background: #5c4500;
+    color: #f5f5f5;
+
+    border: 2px solid #d4a017;
+
+    padding: 10px 16px;
+
+    font-family: inherit;
+    font-size: 1rem;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+button:hover {
+    background: #d4a017;
+    color: #111;
+
+    box-shadow:
+        0 0 10px #d4a017,
+        0 0 20px #8f6b00;
+}
+
+button:active {
+    transform: scale(.97);
+}
+
+.btnNav {
+    display: block;
+
+    width: 220px;
+
+    margin: 30px auto 0;
+
+    padding: 15px;
+
+    background: transparent;
+
+    color: #f5f5f5;
+
+    border: 2px solid #d4a017;
+
+    text-transform: uppercase;
+
+    letter-spacing: 2px;
+}
+
+.btnNav:hover {
+    background: #d4a017;
+    color: #111;
+}
+
+.btnInterativo {
+    width: 130px;
+}
+
+/* =======================
+   PAINEL
+======================= */
+
+.painel {
+
     width: 90%;
     max-width: 900px;
 
     margin: auto;
 
-    background: rgba(15,15,15,.9);
+    background: rgba(15, 15, 15, .92);
 
-    border: 2px solid #8b0000;
+    border: 2px solid #d4a017;
 
     padding: 30px;
 
     box-shadow:
-        0 0 20px rgba(139,0,0,.4);
+        0 0 20px rgba(212, 160, 23, .35);
 }
 
-/* Formulário */
+/* =======================
+   FORMULÁRIO INVENTÁRIO
+======================= */
 
-.formulario{
-    display:flex;
-    gap:15px;
-    margin-bottom:30px;
+.formulario {
+
+    display: flex;
+
+    gap: 15px;
+
+    margin-bottom: 30px;
 }
 
-.formulario input{
-    flex:1;
+.formulario input {
 
-    background:#111;
+    flex: 1;
 
-    border:1px solid #700;
+    background: #111;
 
-    color:white;
+    border: 1px solid #8c6b00;
 
-    padding:12px;
+    color: white;
 
-    font-family:inherit;
-    font-size:18px;
+    padding: 12px;
+
+    font-family: inherit;
+
+    font-size: 18px;
 }
 
-.formulario input:focus{
-    outline:none;
+.formulario input:focus {
 
-    border-color:#d62020;
+    outline: none;
 
-    box-shadow:0 0 10px #8b0000;
+    border-color: #ffd54a;
+
+    box-shadow: 0 0 10px #d4a017;
 }
 
-.formulario input[type="number"]{
-    max-width:90px;
-    text-align:center;
+.formulario input[type="number"] {
+
+    max-width: 90px;
+
+    text-align: center;
 }
 
-/* Lista */
+/* =======================
+   LISTA
+======================= */
 
-.listaItens{
-    display:flex;
-    flex-direction:column;
-    gap:15px;
+.listaItens {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
 }
 
-/* Item */
+.itemInventario {
 
-.itemInventario{
+    display: flex;
 
-    display:flex;
+    justify-content: space-between;
 
-    justify-content:space-between;
+    align-items: center;
 
-    align-items:center;
+    padding: 18px;
 
-    padding:18px;
+    border-left: 5px solid #d4a017;
 
-    border-left:5px solid #8b0000;
+    background: #161616;
 
-    background:#161616;
-
-    transition:.2s;
+    transition: .2s;
 }
 
-.itemInventario:hover{
+.itemInventario:hover {
 
-    background:#1d1d1d;
+    background: #1f1f1f;
 
-    transform:translateX(5px);
+    transform: translateX(5px);
 }
 
-.itemInventario h3{
-    margin:0;
+.itemInventario h3 {
 
-    text-transform:uppercase;
+    margin: 0;
 
-    letter-spacing:2px;
+    color: #ffd54a;
 
-    color:#fff;
+    text-transform: uppercase;
+
+    letter-spacing: 2px;
 }
 
-.itemInventario p{
-    margin-top:5px;
-    color:#bdbdbd;
+.itemInventario p {
+
+    margin-top: 5px;
+
+    color: #d5d5d5;
 }
 
-/* Botão remover */
+/* =======================
+   QUANTIDADE
+======================= */
 
-.btnInterativo{
+.controlesQuantidade {
 
-    width:130px;
+    display: flex;
 
-    background:#3b0000;
+    gap: 8px;
 
-    border:1px solid #8b0000;
+    margin-top: 10px;
 }
 
-.btnExcluir:hover{
-    background:#8b0000;
+.controlesQuantidade button {
+
+    width: 60px;
+
+    padding: 8px;
 }
 
-/* Botão voltar */
+/* =======================
+   ANOTAÇÕES
+======================= */
 
-.btnNav{
+.formularioColuna {
 
-    margin-top:30px;
+    display: flex;
 
-    width:220px;
+    flex-direction: column;
 
-    display:block;
+    gap: 15px;
 
-    margin-left:auto;
-
-    margin-right:auto;
+    margin-bottom: 30px;
 }
 
-.controlesQuantidade{
-    display:flex;
-    gap:8px;
-    margin-top:10px;
+.formularioColuna input,
+.formularioColuna textarea {
+
+    background: #111;
+
+    border: 1px solid #8c6b00;
+
+    color: white;
+
+    padding: 12px;
+
+    font-family: inherit;
+
+    font-size: 18px;
 }
 
-.controlesQuantidade button{
-    width:60px;
-    padding:8px;
-    font-size:16px;
+.formularioColuna textarea {
+
+    resize: vertical;
+
+    min-height: 180px;
+}
+
+.formularioColuna textarea:focus,
+.formularioColuna input:focus {
+
+    outline: none;
+
+    border-color: #ffd54a;
+
+    box-shadow: 0 0 10px #d4a017;
+}
+
+/* =======================
+   SCROLLBAR
+======================= */
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #111;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d4a017;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #ffd54a;
+}
+
+/* =======================
+   SELEÇÃO DE TEXTO
+======================= */
+
+::selection {
+    background: #d4a017;
+    color: black;
 }
