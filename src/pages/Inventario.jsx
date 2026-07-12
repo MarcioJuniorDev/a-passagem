@@ -64,8 +64,7 @@ export default function Inventario() {
     const { error } = await supabase
       .from("inventario")
       .update({
-        quantidade: itemExistente.quantidade + quantidade,
-        descricao,
+        quantidade: novaQuantidade,
       })
       .eq("id", item.id);
 
@@ -100,12 +99,18 @@ export default function Inventario() {
     }
 
     if (itemExistente) {
-      // Atualiza a quantidade somando a existente
+      const dadosAtualizados = {
+        quantidade: itemExistente.quantidade + quantidade,
+      };
+
+      // Atualiza a descrição somente se foi informada
+      if (descricao.trim() !== "") {
+        dadosAtualizados.descricao = descricao.trim();
+      }
+
       const { error: erroUpdate } = await supabase
         .from("inventario")
-        .update({
-          quantidade: itemExistente.quantidade + quantidade,
-        })
+        .update(dadosAtualizados)
         .eq("id", itemExistente.id);
 
       if (erroUpdate) {
@@ -113,13 +118,12 @@ export default function Inventario() {
         return;
       }
     } else {
-      // Insere um novo item
       const { error: erroInsert } = await supabase
         .from("inventario")
         .insert({
           nome: nomeLimpo,
           quantidade,
-          descricao,
+          descricao: descricao.trim(),
         });
 
       if (erroInsert) {
@@ -131,6 +135,7 @@ export default function Inventario() {
     setNome("");
     setQuantidade(1);
     setDescricao("");
+
     carregarItens();
   }
 
