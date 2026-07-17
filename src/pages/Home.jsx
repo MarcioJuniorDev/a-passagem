@@ -12,6 +12,7 @@ export default function Home() {
       <button className='btnNav' onClick={() => navigate("/inventario")}>Inventário</button>
       <button className='btnNav' onClick={() => navigate("/anotacoes")}>Anotações</button>
       <button className='btnNav' onClick={() => navigate("/regras")}>Regras</button>
+      <button className='btnNav' onClick={() => navigate("/documentos")}>Documentos</button>
     </>
   )
 }
