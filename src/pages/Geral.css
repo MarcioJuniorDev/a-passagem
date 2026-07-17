@@ -473,3 +473,18 @@ button:active {
     box-shadow:
         0 0 15px rgba(180, 140, 0, .5);
 }
+
+/* documentos */
+.tituloGrupo {
+    margin: 25px 0 10px;
+
+    color: #d4a017;
+
+    text-transform: uppercase;
+
+    letter-spacing: 3px;
+
+    border-bottom: 1px solid #d4a017;
+
+    padding-bottom: 5px;
+}

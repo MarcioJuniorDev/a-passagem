@@ -9,10 +9,23 @@ export default function Documentos() {
     const [documentos, setDocumentos] = useState([]);
     const [arquivo, setArquivo] = useState(null);
     const [titulo, setTitulo] = useState("");
+    const [grupo, setGrupo] = useState("");
+
+    const [editandoId, setEditandoId] = useState(null);
 
     useEffect(() => {
         carregarDocumentos();
     }, []);
+
+    function abrirImagem(url) {
+        window.open(url, "_blank");
+    }
+
+    function editarDocumento(doc) {
+        setEditandoId(doc.id);
+        setTitulo(doc.titulo);
+        setGrupo(doc.grupo ?? "");
+    }
 
     async function carregarDocumentos() {
         const { data, error } = await supabase
@@ -29,46 +42,92 @@ export default function Documentos() {
     }
 
     async function enviarArquivo() {
-        if (!arquivo) return;
 
         if (!titulo.trim()) {
             alert("Informe um título.");
             return;
         }
 
+
+        // EDITAR
+        if (editandoId) {
+
+            const { error } = await supabase
+                .from("documentos")
+                .update({
+                    titulo: titulo.trim(),
+                    grupo: grupo.trim(),
+                })
+                .eq("id", editandoId);
+
+
+            if (error) {
+                console.error(error);
+                return;
+            }
+
+
+            limparFormulario();
+            carregarDocumentos();
+            return;
+        }
+
+
+        // NOVO ARQUIVO
+        if (!arquivo) return;
+
+
         const nomeArquivo = `${Date.now()}-${arquivo.name}`;
+
 
         const { error: erroUpload } = await supabase.storage
             .from("documentos")
             .upload(nomeArquivo, arquivo);
+
 
         if (erroUpload) {
             console.error(erroUpload);
             return;
         }
 
+
         const { data } = supabase.storage
             .from("documentos")
             .getPublicUrl(nomeArquivo);
+
 
         const { error } = await supabase
             .from("documentos")
             .insert({
                 titulo: titulo.trim(),
+                grupo: grupo.trim(),
                 nome: arquivo.name,
                 url: data.publicUrl,
             });
+
 
         if (error) {
             console.error(error);
             return;
         }
 
+
+        limparFormulario();
+        carregarDocumentos();
+    }
+
+    function limparFormulario() {
+
         setArquivo(null);
         setTitulo("");
-        document.getElementById("arquivo").value = "";
+        setGrupo("");
+        setEditandoId(null);
 
-        carregarDocumentos();
+        const input = document.getElementById("arquivo");
+
+        if (input) {
+            input.value = "";
+        }
     }
 
     async function removerDocumento(doc) {
@@ -85,6 +144,20 @@ export default function Documentos() {
 
         carregarDocumentos();
     }
+
+    const documentosAgrupados = documentos.reduce((grupos, doc) => {
+
+        const nomeGrupo = doc.grupo || "Sem grupo";
+
+        if (!grupos[nomeGrupo]) {
+            grupos[nomeGrupo] = [];
+        }
+
+        grupos[nomeGrupo].push(doc);
+
+        return grupos;
+
+    }, {});
 
     return (
         <>
@@ -103,6 +176,14 @@ export default function Documentos() {
                         value={titulo}
                         onChange={(e) => setTitulo(e.target.value)}
                     />
+
+                    <input
+                        type="text"
+                        placeholder="Grupo do documento"
+                        value={grupo}
+                        onChange={(e) => setGrupo(e.target.value)}
+                    />
+
                     <input
                         id="arquivo"
                         type="file"
@@ -110,38 +191,79 @@ export default function Documentos() {
                     />
 
                     <button onClick={enviarArquivo}>
-                        Enviar arquivo
+                        {editandoId ? "Atualizar documento" : "Enviar arquivo"}
                     </button>
 
                 </div>
 
                 <div className="listaItens">
-                    {documentos.map((doc) => (
-                        <div
-                            key={doc.id}
-                            className="itemInventario"
-                        >
-                            <div>
-                                <h3>{doc.titulo}</h3>
-                                <p>{doc.nome}</p>
+                    {Object.entries(documentosAgrupados).map(
+                        ([nomeGrupo, docs]) => (
 
-                                {doc.url && (
-                                    <img
-                                        src={doc.url}
-                                        alt={doc.titulo}
-                                        className="imagemRegra"
-                                    />
-                                )}
+                            <div key={nomeGrupo}>
+
+                                <h2 className="tituloGrupo">
+                                    {nomeGrupo}
+                                </h2>
+
+
+                                {docs.map((doc) => (
+
+                                    <div
+                                        key={doc.id}
+                                        className="itemInventario"
+                                    >
+
+                                        <div>
+
+                                            <h3>{doc.titulo}</h3>
+
+                                            <p>{doc.nome}</p>
+
+
+                                            {doc.url && (
+                                                <img
+                                                    src={doc.url}
+                                                    alt={doc.titulo}
+                                                    className="imagemRegra"
+                                                />
+                                            )}
+
+                                        </div>
+
+
+                                        <div className="botoesAnotacao">
+                                            {doc.url && (
+                                                <button
+                                                    className="btnInterativo"
+                                                    onClick={() => abrirImagem(doc.url)}
+                                                >
+                                                    Abrir imagem
+                                                </button>
+                                            )}
+                                            <button
+                                                className="btnInterativo"
+                                                onClick={() => editarDocumento(doc)}
+                                            >
+                                                Editar
+                                            </button>
+
+                                            <button
+                                                className="btnInterativo"
+                                                onClick={() => removerDocumento(doc.id)}
+                                            >
+                                                Excluir
+                                            </button>
+                                        </div>
+
+                                    </div>
+
+                                ))}
+
                             </div>
 
-                            <button
-                                className="btnInterativo"
-                                onClick={() => removerDocumento(doc)}
-                            >
-                                Excluir
-                            </button>
-                        </div>
-                    ))}
+                        )
+                    )}
                 </div>
 
                 <button
