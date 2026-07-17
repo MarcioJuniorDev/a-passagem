@@ -252,7 +252,7 @@ export default function Inventario() {
       </div>
 
       <button
-        className="btnNav"
+        className="btnNavV"
         onClick={() => navigate("/")}
       >
         Voltar

@@ -145,7 +145,7 @@ export default function Documentos() {
                 </div>
 
                 <button
-                    className="btnNav"
+                    className="btnNavV"
                     onClick={() => navigate("/")}
                 >
                     Voltar

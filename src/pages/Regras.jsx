@@ -221,7 +221,7 @@ export default function Regras() {
         </div>
 
         <button
-          className="btnNav"
+          className="btnNavV"
           onClick={() => navigate("/")}
         >
           Voltar

@@ -117,6 +117,43 @@ button:active {
     color: #111;
 }
 
+.btnNavV {
+    position: fixed;
+
+    bottom: 30px;
+    right: -55px;
+    transform: translateX(-50%);
+
+    width: 220px;
+
+    padding: 15px;
+
+    background: transparent;
+
+    color: #f5f5f5;
+
+    border: 2px solid #d4a017;
+
+    text-transform: uppercase;
+
+    letter-spacing: 2px;
+
+    cursor: pointer;
+
+    z-index: 1000;
+
+    transition: .25s;
+}
+
+.btnNavV:hover {
+    background: #d4a017;
+    color: #111;
+
+    box-shadow:
+        0 0 15px #d4a017,
+        0 0 30px #8c6b00;
+}
+
 .btnInterativo {
     width: 130px;
 }
@@ -434,5 +471,5 @@ button:active {
     border: 2px solid #8c6b00;
 
     box-shadow:
-        0 0 15px rgba(180,140,0,.5);
+        0 0 15px rgba(180, 140, 0, .5);
 }

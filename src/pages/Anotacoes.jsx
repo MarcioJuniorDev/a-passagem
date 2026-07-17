@@ -166,7 +166,7 @@ export default function Anotacoes() {
         </div>
 
         <button
-          className="btnNav"
+          className="btnNavV"
           onClick={() => navigate("/")}
         >
           Voltar
