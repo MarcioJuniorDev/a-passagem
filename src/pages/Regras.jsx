@@ -10,6 +10,7 @@ export default function Regras() {
   const [titulo, setTitulo] = useState("");
   const [conteudo, setConteudo] = useState("");
   const [editandoId, setEditandoId] = useState(null);
+  const [imagem, setImagem] = useState(null);
 
   useEffect(() => {
     carregarRegras();
@@ -32,26 +33,64 @@ export default function Regras() {
   async function salvarRegras() {
     if (!titulo.trim()) return;
 
+    let urlImagem = null;
+
+
+    // Upload da imagem
+    if (imagem) {
+
+      const nomeArquivo = `${Date.now()}-${imagem.name}`;
+
+      const { error: erroUpload } = await supabase.storage
+        .from("imagens-regras")
+        .upload(nomeArquivo, imagem);
+
+
+      if (erroUpload) {
+        console.error(erroUpload);
+        return;
+      }
+
+
+      const { data } = supabase.storage
+        .from("imagens-regras")
+        .getPublicUrl(nomeArquivo);
+
+
+      urlImagem = data.publicUrl;
+    }
+
+
+    const dados = {
+      titulo: titulo.trim(),
+      conteudo: conteudo.trim(),
+    };
+
+
+    if (urlImagem) {
+      dados.imagem = urlImagem;
+    }
+
+
     if (editandoId) {
+
       const { error } = await supabase
         .from("regras")
-        .update({
-          titulo: titulo.trim(),
-          conteudo: conteudo.trim(),
-        })
+        .update(dados)
         .eq("id", editandoId);
+
 
       if (error) {
         console.error(error);
         return;
       }
+
     } else {
+
       const { error } = await supabase
         .from("regras")
-        .insert({
-          titulo: titulo.trim(),
-          conteudo: conteudo.trim(),
-        });
+        .insert(dados);
+
 
       if (error) {
         console.error(error);
@@ -59,7 +98,9 @@ export default function Regras() {
       }
     }
 
+
     limparFormulario();
+    setImagem(null);
     carregarRegras();
   }
 
@@ -117,6 +158,12 @@ export default function Regras() {
             onChange={(e) => setConteudo(e.target.value)}
           />
 
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImagem(e.target.files[0])}
+          />
+
           <button onClick={salvarRegras}>
             {editandoId ? "Atualizar" : "Salvar"}
           </button>
@@ -140,6 +187,14 @@ export default function Regras() {
             >
               <div style={{ flex: 1 }}>
                 <h3>{regra.titulo}</h3>
+
+                {regra.imagem && (
+                  <img
+                    src={regra.imagem}
+                    alt={regra.titulo}
+                    className="imagemRegra"
+                  />
+                )}
 
                 <p style={{ whiteSpace: "pre-wrap" }}>
                   {regra.conteudo}

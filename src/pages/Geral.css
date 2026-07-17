@@ -420,3 +420,19 @@ button:active {
     background: #d4a017;
     color: black;
 }
+
+/* regras */
+.imagemRegra {
+    width: 100%;
+    max-width: 400px;
+    max-height: 250px;
+
+    object-fit: cover;
+
+    margin-bottom: 15px;
+
+    border: 2px solid #8c6b00;
+
+    box-shadow:
+        0 0 15px rgba(180,140,0,.5);
+}

@@ -125,13 +125,13 @@ export default function Documentos() {
                                 <h3>{doc.titulo}</h3>
                                 <p>{doc.nome}</p>
 
-                                <a
-                                    href={doc.url}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
-                                    Abrir documento
-                                </a>
+                                {doc.url && (
+                                    <img
+                                        src={doc.url}
+                                        alt={doc.titulo}
+                                        className="imagemRegra"
+                                    />
+                                )}
                             </div>
 
                             <button
