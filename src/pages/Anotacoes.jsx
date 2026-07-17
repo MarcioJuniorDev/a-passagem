@@ -132,21 +132,31 @@ export default function Anotacoes() {
 
         </div>
 
-        <div className="listaItens">
+        <div className="listaAnotacoes">
+
           {anotacoes.map((anotacao) => (
+
             <div
               key={anotacao.id}
-              className="itemInventario"
+              className="cardAnotacao"
             >
-              <div style={{ flex: 1 }}>
-                <h3>{anotacao.titulo}</h3>
 
-                <p style={{ whiteSpace: "pre-wrap" }}>
+              <div className="conteudoAnotacao">
+
+                <h3>
+                  {anotacao.titulo}
+                </h3>
+
+
+                <p>
                   {anotacao.conteudo}
                 </p>
+
               </div>
 
+
               <div className="botoesAnotacao">
+
                 <button
                   className="btnInterativo"
                   onClick={() => editarAnotacao(anotacao)}
@@ -154,15 +164,20 @@ export default function Anotacoes() {
                   Editar
                 </button>
 
+
                 <button
                   className="btnInterativo"
                   onClick={() => removerAnotacao(anotacao.id)}
                 >
                   Excluir
                 </button>
+
               </div>
+
             </div>
+
           ))}
+
         </div>
 
         <button

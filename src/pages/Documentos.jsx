@@ -196,69 +196,86 @@ export default function Documentos() {
 
                 </div>
 
-                <div className="listaItens">
+                <div className="listaAnotacoes">
                     {Object.entries(documentosAgrupados).map(
                         ([nomeGrupo, docs]) => (
 
-                            <div key={nomeGrupo}>
+                            <div
+                                key={nomeGrupo}
+                                className="grupoDocumentos"
+                            >
 
                                 <h2 className="tituloGrupo">
                                     {nomeGrupo}
                                 </h2>
 
 
-                                {docs.map((doc) => (
+                                <div className="listaGrupo">
 
-                                    <div
-                                        key={doc.id}
-                                        className="itemInventario"
-                                    >
+                                    {docs.map((doc) => (
 
-                                        <div>
+                                        <div
+                                            key={doc.id}
+                                            className="cardDocumento"
+                                        >
 
-                                            <h3>{doc.titulo}</h3>
+                                            <div>
 
-                                            <p>{doc.nome}</p>
-
-
-                                            {doc.url && (
-                                                <img
-                                                    src={doc.url}
-                                                    alt={doc.titulo}
-                                                    className="imagemRegra"
-                                                />
-                                            )}
-
-                                        </div>
+                                                <h3>
+                                                    {doc.titulo}
+                                                </h3>
 
 
-                                        <div className="botoesAnotacao">
-                                            {doc.url && (
+                                                <p>
+                                                    {doc.nome}
+                                                </p>
+
+
+                                                {doc.url && (
+                                                    <img
+                                                        src={doc.url}
+                                                        alt={doc.titulo}
+                                                        className="imagemRegra"
+                                                    />
+                                                )}
+
+                                            </div>
+
+
+                                            <div className="botoesAnotacao">
+
+                                                {doc.url && (
+                                                    <button
+                                                        className="btnInterativo"
+                                                        onClick={() => abrirImagem(doc.url)}
+                                                    >
+                                                        Abrir
+                                                    </button>
+                                                )}
+
+
                                                 <button
                                                     className="btnInterativo"
-                                                    onClick={() => abrirImagem(doc.url)}
+                                                    onClick={() => editarDocumento(doc)}
                                                 >
-                                                    Abrir imagem
+                                                    Editar
                                                 </button>
-                                            )}
-                                            <button
-                                                className="btnInterativo"
-                                                onClick={() => editarDocumento(doc)}
-                                            >
-                                                Editar
-                                            </button>
 
-                                            <button
-                                                className="btnInterativo"
-                                                onClick={() => removerDocumento(doc.id)}
-                                            >
-                                                Excluir
-                                            </button>
+
+                                                <button
+                                                    className="btnInterativo"
+                                                    onClick={() => removerDocumento(doc)}
+                                                >
+                                                    Excluir
+                                                </button>
+
+                                            </div>
+
                                         </div>
 
-                                    </div>
+                                    ))}
 
-                                ))}
+                                </div>
 
                             </div>
 
