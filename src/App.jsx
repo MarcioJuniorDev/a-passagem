@@ -5,11 +5,12 @@ import Inventario from "./pages/Inventario";
 import Anotacoes from "./pages/Anotacoes";
 import Regras from "./pages/Regras";
 import Documentos from "./pages/Documentos";
+import Autenticacao from "./pages/Autenticacao";
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Autenticacao />} />
       <Route path="/inventario" element={<Inventario />} />
       <Route path="/anotacoes" element={<Anotacoes/>} />
       <Route path="/regras" element={<Regras/>} />
