@@ -6,6 +6,8 @@ import "./Geral.css";
 export default function Documentos() {
     const navigate = useNavigate();
 
+    const autenticado = JSON.parse(localStorage.getItem("usuario"));
+
     const [documentos, setDocumentos] = useState([]);
     const [arquivo, setArquivo] = useState(null);
     const [titulo, setTitulo] = useState("");
@@ -22,9 +24,14 @@ export default function Documentos() {
     }
 
     function editarDocumento(doc) {
-        setEditandoId(doc.id);
-        setTitulo(doc.titulo);
-        setGrupo(doc.grupo ?? "");
+        if (autenticado) {
+            setEditandoId(doc.id);
+            setTitulo(doc.titulo);
+            setGrupo(doc.grupo ?? "");
+        }
+        else {
+            alert("você está no modo espectador. faça login para editar documentos.")
+        }
     }
 
     async function carregarDocumentos() {
@@ -42,23 +49,69 @@ export default function Documentos() {
     }
 
     async function enviarArquivo() {
+        if (autenticado) {
+            if (!titulo.trim()) {
+                alert("Informe um título.");
+                return;
+            }
 
-        if (!titulo.trim()) {
-            alert("Informe um título.");
-            return;
-        }
+
+            // EDITAR
+            if (editandoId) {
+
+                const { error } = await supabase
+                    .from("documentos")
+                    .update({
+                        titulo: titulo.trim(),
+                        grupo: grupo.trim(),
+                    })
+                    .eq("id", editandoId);
 
 
-        // EDITAR
-        if (editandoId) {
+                if (error) {
+                    console.error(error);
+                    return;
+                }
+
+
+                limparFormulario();
+                carregarDocumentos();
+                return;
+
+            }
+
+
+            // NOVO ARQUIVO
+            if (!arquivo) return;
+
+
+            const nomeArquivo = `${Date.now()}-${arquivo.name}`;
+
+
+            const { error: erroUpload } = await supabase.storage
+                .from("documentos")
+                .upload(nomeArquivo, arquivo);
+
+
+            if (erroUpload) {
+                console.error(erroUpload);
+                return;
+            }
+
+
+            const { data } = supabase.storage
+                .from("documentos")
+                .getPublicUrl(nomeArquivo);
+
 
             const { error } = await supabase
                 .from("documentos")
-                .update({
+                .insert({
                     titulo: titulo.trim(),
                     grupo: grupo.trim(),
-                })
-                .eq("id", editandoId);
+                    nome: arquivo.name,
+                    url: data.publicUrl,
+                });
 
 
             if (error) {
@@ -69,51 +122,11 @@ export default function Documentos() {
 
             limparFormulario();
             carregarDocumentos();
-            return;
         }
+        else {
+            alert("você está no modo espectador. faça login para inserir documentos.")
 
-
-        // NOVO ARQUIVO
-        if (!arquivo) return;
-
-
-        const nomeArquivo = `${Date.now()}-${arquivo.name}`;
-
-
-        const { error: erroUpload } = await supabase.storage
-            .from("documentos")
-            .upload(nomeArquivo, arquivo);
-
-
-        if (erroUpload) {
-            console.error(erroUpload);
-            return;
         }
-
-
-        const { data } = supabase.storage
-            .from("documentos")
-            .getPublicUrl(nomeArquivo);
-
-
-        const { error } = await supabase
-            .from("documentos")
-            .insert({
-                titulo: titulo.trim(),
-                grupo: grupo.trim(),
-                nome: arquivo.name,
-                url: data.publicUrl,
-            });
-
-
-        if (error) {
-            console.error(error);
-            return;
-        }
-
-
-        limparFormulario();
-        carregarDocumentos();
     }
 
     function limparFormulario() {
@@ -131,18 +144,24 @@ export default function Documentos() {
     }
 
     async function removerDocumento(doc) {
-        const nomeArquivo = doc.url.split("/").pop();
+        if (autenticado) {
+            const nomeArquivo = doc.url.split("/").pop();
 
-        await supabase.storage
-            .from("documentos")
-            .remove([nomeArquivo]);
+            await supabase.storage
+                .from("documentos")
+                .remove([nomeArquivo]);
 
-        await supabase
-            .from("documentos")
-            .delete()
-            .eq("id", doc.id);
+            await supabase
+                .from("documentos")
+                .delete()
+                .eq("id", doc.id);
 
-        carregarDocumentos();
+            carregarDocumentos();
+        }
+        else {
+            alert("você está no modo espectador. faça login para remover documentos.")
+
+        }
     }
 
     const documentosAgrupados = documentos.reduce((grupos, doc) => {
@@ -285,7 +304,7 @@ export default function Documentos() {
 
                 <button
                     className="btnNavV"
-                    onClick={() => navigate("/")}
+                    onClick={() => navigate("/home")}
                 >
                     Voltar
                 </button>

@@ -583,3 +583,9 @@ textarea {
     color:black;
 
 }
+
+/* AUTENTICAÇÃO */
+#inputAutenticacao
+{
+    justify-content: center;
+}

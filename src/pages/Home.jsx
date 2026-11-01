@@ -1,8 +1,10 @@
 import { react } from 'react';
 import { useNavigate } from "react-router-dom";
 import './Geral.css'
+import verificarAutenticacao from "../components/VerificarAutenticacao"
 
 export default function Home() {
+  verificarAutenticacao();
   const navigate = useNavigate();
   return (
     <>

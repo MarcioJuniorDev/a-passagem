@@ -5,6 +5,7 @@ import "./Geral.css";
 
 export default function Anotacoes() {
   const navigate = useNavigate();
+  const autenticado = JSON.parse(localStorage.getItem("usuario"));
 
   const [anotacoes, setAnotacoes] = useState([]);
   const [titulo, setTitulo] = useState("");
@@ -30,61 +31,79 @@ export default function Anotacoes() {
   }
 
   async function salvarAnotacao() {
-    if (!titulo.trim()) return;
+    if (autenticado) {
+      if (!titulo.trim()) return;
 
-    if (editandoId) {
-      const { error } = await supabase
-        .from("anotacoes")
-        .update({
-          titulo: titulo.trim(),
-          conteudo: conteudo.trim(),
-        })
-        .eq("id", editandoId);
+      if (editandoId) {
+        const { error } = await supabase
+          .from("anotacoes")
+          .update({
+            titulo: titulo.trim(),
+            conteudo: conteudo.trim(),
+          })
+          .eq("id", editandoId);
 
-      if (error) {
-        console.error(error);
-        return;
+        if (error) {
+          console.error(error);
+          return;
+        }
+      } else {
+        const { error } = await supabase
+          .from("anotacoes")
+          .insert({
+            titulo: titulo.trim(),
+            conteudo: conteudo.trim(),
+          });
+
+        if (error) {
+          console.error(error);
+          return;
+        }
       }
-    } else {
-      const { error } = await supabase
-        .from("anotacoes")
-        .insert({
-          titulo: titulo.trim(),
-          conteudo: conteudo.trim(),
-        });
 
-      if (error) {
-        console.error(error);
-        return;
-      }
+      limparFormulario();
+      carregarAnotacoes();
     }
-
-    limparFormulario();
-    carregarAnotacoes();
+    else {
+      alert("você está no modo espectador. faça login para salvar anotações.")
+    }
   }
 
   async function removerAnotacao(id) {
-    const { error } = await supabase
-      .from("anotacoes")
-      .delete()
-      .eq("id", id);
+    if (autenticado) {
+      const { error } = await supabase
+        .from("anotacoes")
+        .delete()
+        .eq("id", id);
 
-    if (error) {
-      console.error(error);
-      return;
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      if (editandoId === id) {
+        limparFormulario();
+      }
+
+      carregarAnotacoes();
     }
-
-    if (editandoId === id) {
-      limparFormulario();
+    else
+    {
+      alert("você está no modo espectador. faça login para remover anotações.")
     }
-
-    carregarAnotacoes();
   }
 
   function editarAnotacao(anotacao) {
+    if (autenticado)
+    {
     setEditandoId(anotacao.id);
     setTitulo(anotacao.titulo);
     setConteudo(anotacao.conteudo);
+    }
+    else
+    {
+      alert("você está no modo espectador. faça login para editar anotações.")
+    }
   }
 
   function limparFormulario() {
@@ -92,6 +111,7 @@ export default function Anotacoes() {
     setConteudo("");
     setEditandoId(null);
   }
+
 
   return (
     <>
@@ -182,7 +202,7 @@ export default function Anotacoes() {
 
         <button
           className="btnNavV"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/home")}
         >
           Voltar
         </button>
