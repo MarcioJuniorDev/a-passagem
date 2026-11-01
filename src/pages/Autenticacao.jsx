@@ -1,17 +1,23 @@
 import "./Geral.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabase";
 
 export default function Autenticacao() {
-
     const [nomeUsuario, setNomeUsuario] = useState('');
     const navigate = useNavigate();
 
-    function fnEnviar() {
-        if (nomeUsuario === fnBuscarUsuario()) {
-            navigate("/home")
+    async function fnEnviar() {
+        const usuarioCorreto = await fnBuscarUsuario();
+
+        if (!usuarioCorreto) {
+            alert("Erro ao buscar usuário.");
+            return;
         }
-        else {
+
+        if (nomeUsuario === usuarioCorreto) {
+            navigate("/home");
+        } else {
             alert("Usuário errado. Insira novamente ou entre apenas como visualizador.");
         }
     }
@@ -20,25 +26,30 @@ export default function Autenticacao() {
         const { data, error } = await supabase
             .from("usuarios")
             .select("nome")
-            .eq("id", 1);
+            .eq("id", 1)
+            .maybeSingle();
 
         if (error) {
             console.error(error);
-            return;
+            return null;
         }
 
-        return data;
+        return data?.nome ?? null;
     }
 
     return (
         <>
             <div id="inputAutenticacao">
-                <input type="text" placeholder="insira o usuário"
-                    onChange={(e) => setNomeUsuario(e.target.value)} />
+                <input
+                    type="text"
+                    placeholder="Insira o usuário"
+                    value={nomeUsuario}
+                    onChange={(e) => setNomeUsuario(e.target.value)}
+                />
             </div>
 
             <div id="enviar">
-                <button onClick={() => fnEnviar()}>Enviar</button>
+                <button onClick={fnEnviar}>Enviar</button>
             </div>
         </>
     );
