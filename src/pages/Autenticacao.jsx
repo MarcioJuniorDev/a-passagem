@@ -16,6 +16,7 @@ export default function Autenticacao() {
         }
 
         if (nomeUsuario === usuarioCorreto) {
+            await fnSalvarUsuarioLocalmente();
             navigate("/home");
         } else {
             alert("Usuário errado. Insira novamente ou entre apenas como visualizador.");
@@ -35,6 +36,18 @@ export default function Autenticacao() {
         }
 
         return data?.nome ?? null;
+    }
+
+    // armazenamento local dos dados do usuário
+    const CHAVE_USUARIO = '@usuario';
+
+    async function fnSalvarUsuarioLocalmente() {
+        try {
+            localStorage.setItem('usuario', 1);
+            console.log("usuario logado")
+        } catch (e) {
+            console.error('Erro ao salvar usuário:', e);
+        }
     }
 
     return (
