@@ -305,7 +305,7 @@ export default function Inventario() {
 
       <button
         className="btnNavV"
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/home")}
       >
         Voltar
       </button>

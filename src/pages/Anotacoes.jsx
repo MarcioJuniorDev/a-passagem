@@ -182,7 +182,7 @@ export default function Anotacoes() {
 
         <button
           className="btnNavV"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/home")}
         >
           Voltar
         </button>
