@@ -7,6 +7,8 @@ export default function Inventario() {
 
   const navigate = useNavigate();
 
+  const autenticado = JSON.parse(localStorage.getItem("usuario"));
+
   const [itens, setItens] = useState([]);
   const [nome, setNome] = useState("");
   const [quantidade, setQuantidade] = useState(1);
@@ -49,121 +51,138 @@ export default function Inventario() {
   }
 
   async function alterarQuantidade(item, valor) {
+    if (autenticado) {
+      const novaQuantidade = item.quantidade + valor;
 
-    const novaQuantidade = item.quantidade + valor;
+      if (novaQuantidade < 0) return;
 
-    if (novaQuantidade < 0) return;
+      const { error } = await supabase
+        .from("inventario")
+        .update({
 
-    const { error } = await supabase
-      .from("inventario")
-      .update({
+          quantidade: novaQuantidade
 
-        quantidade: novaQuantidade
+        })
+        .eq("id", item.id);
 
-      })
-      .eq("id", item.id);
+      if (error) {
 
-    if (error) {
-
-      console.error(error);
-      return;
+        console.error(error);
+        return;
+      }
+      carregarItens();
     }
-    carregarItens();
+    else {
+      alert("você está no modo espectador. faça login para alterar a quantidade de itens.")
+    }
   }
 
   async function alterarDescricao(item, novaDescricao) {
+    if (autenticado) {
+      const { error } = await supabase
+        .from("inventario")
+        .update({
+          descricao: novaDescricao
+        })
+        .eq("id", item.id);
 
-    const { error } = await supabase
-      .from("inventario")
-      .update({
-        descricao: novaDescricao
-      })
-      .eq("id", item.id);
-
-    if (error) {
-      console.error(error);
-      return;
+      if (error) {
+        console.error(error);
+        return;
+      }
+      carregarItens();
     }
-    carregarItens();
+    else {
+      alert("você está no modo espectador. faça login para alterar a descrição.")
+    }
   }
 
   async function adicionarItem() {
+    if (autenticado) {
+      if (!nome.trim()) return;
 
-    if (!nome.trim()) return;
-
-    if (quantidade < 0) {
-      alert("A quantidade não pode ser negativa.");
-      return;
-    }
-
-    const nomeLimpo = nome.trim();
-
-    const { data: itemExistente, error: erroBusca } = await supabase
-      .from("inventario")
-      .select("*")
-      .ilike("nome", nomeLimpo)
-      .maybeSingle();
-
-    if (erroBusca) {
-      console.error(erroBusca);
-      return;
-    }
-
-    if (itemExistente) {
-
-      const dadosAtualizados = {
-        quantidade:
-          itemExistente.quantidade + quantidade
-      };
-
-      if (descricao.trim() !== "") {
-        dadosAtualizados.descricao =
-          descricao.trim();
-      }
-
-      const { error } = await supabase
-        .from("inventario")
-        .update(dadosAtualizados)
-        .eq("id", itemExistente.id);
-
-      if (error) {
-        console.error(error);
+      if (quantidade < 0) {
+        alert("A quantidade não pode ser negativa.");
         return;
       }
 
-    } else {
-      const { error } = await supabase
-        .from("inventario")
-        .insert({
-          nome: nomeLimpo,
-          quantidade,
-          descricao: descricao.trim()
-        });
+      const nomeLimpo = nome.trim();
 
-      if (error) {
-        console.error(error);
+      const { data: itemExistente, error: erroBusca } = await supabase
+        .from("inventario")
+        .select("*")
+        .ilike("nome", nomeLimpo)
+        .maybeSingle();
+
+      if (erroBusca) {
+        console.error(erroBusca);
         return;
       }
-    }
 
-    setNome("");
-    setQuantidade(1);
-    setDescricao("");
-    carregarItens();
+      if (itemExistente) {
+
+        const dadosAtualizados = {
+          quantidade:
+            itemExistente.quantidade + quantidade
+        };
+
+        if (descricao.trim() !== "") {
+          dadosAtualizados.descricao =
+            descricao.trim();
+        }
+
+        const { error } = await supabase
+          .from("inventario")
+          .update(dadosAtualizados)
+          .eq("id", itemExistente.id);
+
+        if (error) {
+          console.error(error);
+          return;
+        }
+
+      } else {
+        const { error } = await supabase
+          .from("inventario")
+          .insert({
+            nome: nomeLimpo,
+            quantidade,
+            descricao: descricao.trim()
+          });
+
+        if (error) {
+          console.error(error);
+          return;
+        }
+      }
+
+      setNome("");
+      setQuantidade(1);
+      setDescricao("");
+      carregarItens();
+    }
+    else {
+      alert("você está no modo espectador. faça login para adicionar itens.")
+    }
   }
 
   async function removerItem(id) {
-    const { error } = await supabase
-      .from("inventario")
-      .delete()
-      .eq("id", id);
+    if (autenticado) {
+      const { error } = await supabase
+        .from("inventario")
+        .delete()
+        .eq("id", id);
 
-    if (error) {
-      console.error(error);
-      return;
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      carregarItens();
     }
-
-    carregarItens();
+    else {
+      alert("você está no modo espectador. faça login para remover itens.")
+    }
   }
 
   useEffect(() => {
