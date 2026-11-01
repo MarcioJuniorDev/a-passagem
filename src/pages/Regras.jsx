@@ -6,6 +6,8 @@ import "./Geral.css";
 export default function Regras() {
   const navigate = useNavigate();
 
+  const autenticado = JSON.parse(localStorage.getItem("usuario"));
+
   const [regras, setRegras] = useState([]);
   const [titulo, setTitulo] = useState("");
   const [conteudo, setConteudo] = useState("");
@@ -31,101 +33,116 @@ export default function Regras() {
   }
 
   async function salvarRegras() {
-    if (!titulo.trim()) return;
+    if (autenticado) {
+      if (!titulo.trim()) return;
 
-    let urlImagem = null;
-
-
-    // Upload da imagem
-    if (imagem) {
-
-      const nomeArquivo = `${Date.now()}-${imagem.name}`;
-
-      const { error: erroUpload } = await supabase.storage
-        .from("imagens-regras")
-        .upload(nomeArquivo, imagem);
+      let urlImagem = null;
 
 
-      if (erroUpload) {
-        console.error(erroUpload);
-        return;
+      // Upload da imagem
+      if (imagem) {
+
+        const nomeArquivo = `${Date.now()}-${imagem.name}`;
+
+        const { error: erroUpload } = await supabase.storage
+          .from("imagens-regras")
+          .upload(nomeArquivo, imagem);
+
+
+        if (erroUpload) {
+          console.error(erroUpload);
+          return;
+        }
+
+
+        const { data } = supabase.storage
+          .from("imagens-regras")
+          .getPublicUrl(nomeArquivo);
+
+
+        urlImagem = data.publicUrl;
       }
 
 
-      const { data } = supabase.storage
-        .from("imagens-regras")
-        .getPublicUrl(nomeArquivo);
+      const dados = {
+        titulo: titulo.trim(),
+        conteudo: conteudo.trim(),
+      };
 
 
-      urlImagem = data.publicUrl;
-    }
-
-
-    const dados = {
-      titulo: titulo.trim(),
-      conteudo: conteudo.trim(),
-    };
-
-
-    if (urlImagem) {
-      dados.imagem = urlImagem;
-    }
-
-
-    if (editandoId) {
-
-      const { error } = await supabase
-        .from("regras")
-        .update(dados)
-        .eq("id", editandoId);
-
-
-      if (error) {
-        console.error(error);
-        return;
+      if (urlImagem) {
+        dados.imagem = urlImagem;
       }
 
-    } else {
 
-      const { error } = await supabase
-        .from("regras")
-        .insert(dados);
+      if (editandoId) {
+
+        const { error } = await supabase
+          .from("regras")
+          .update(dados)
+          .eq("id", editandoId);
 
 
-      if (error) {
-        console.error(error);
-        return;
+        if (error) {
+          console.error(error);
+          return;
+        }
+
+      } else {
+
+        const { error } = await supabase
+          .from("regras")
+          .insert(dados);
+
+
+        if (error) {
+          console.error(error);
+          return;
+        }
       }
+
+
+      limparFormulario();
+      setImagem(null);
+      carregarRegras();
     }
-
-
-    limparFormulario();
-    setImagem(null);
-    carregarRegras();
+    else {
+      alert("você está no modo espectador. faça login para salvar regras.")
+    }
   }
 
   async function removerRegra(id) {
-    const { error } = await supabase
-      .from("regras")
-      .delete()
-      .eq("id", id);
+    if (autenticado) {
+      const { error } = await supabase
+        .from("regras")
+        .delete()
+        .eq("id", id);
 
-    if (error) {
-      console.error(error);
-      return;
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      if (editandoId === id) {
+        limparFormulario();
+      }
+
+      carregarRegras();
     }
-
-    if (editandoId === id) {
-      limparFormulario();
+    else {
+      alert("você está no modo espectador. faça login para remover regras.")
     }
-
-    carregarRegras();
   }
 
   function editarRegra(regra) {
-    setEditandoId(regra.id);
-    setTitulo(regra.titulo);
-    setConteudo(regra.conteudo);
+    if (autenticado) {
+      setEditandoId(regra.id);
+      setTitulo(regra.titulo);
+      setConteudo(regra.conteudo);
+    }
+    else {
+      alert("você está no modo espectador. faça login para editar regras.")
+    }
   }
 
   function limparFormulario() {
