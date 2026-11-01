@@ -584,8 +584,67 @@ textarea {
 
 }
 
-/* AUTENTICAÇÃO */
-#inputAutenticacao
-{
-    justify-content: center;
+/* ================= AUTENTICAÇÃO ================= */
+
+#inputAutenticacao {
+display: flex;
+justify-content: center;
+width: 100%;
+margin-bottom: 20px;
+}
+
+#inputAutenticacao input {
+width: 100%;
+max-width: 350px;
+text-align: center;
+border: 1px solid #8c6b00;
+background: rgba(10, 10, 10, .9);
+}
+
+#inputAutenticacao input {
+border-color: #ffd54a;
+box-shadow: 0 0 12px rgba(212, 160, 23, .5);
+}
+
+#enviar {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 15px;
+width: 100%;
+}
+
+#enviar button {
+width: 220px;
+padding: 13px;
+background: transparent;
+text-transform: uppercase;
+letter-spacing: 2px;
+}
+
+/* Botão de visualização */
+
+#enviar button {
+border-color: #8c6b00;
+color: #d4a017;
+}
+
+#enviar button:last-child {
+background: #5c4500;
+color: #fff;
+box-shadow: 0 0 10px #d4a017;
+}
+
+/* Responsividade */
+
+@media (max-width: 480px) {
+#inputAutenticacao {
+padding: 0 20px;
+}
+
+#enviar button {
+    width: 100%;
+    max-width: 350px;
+}
+
 }
