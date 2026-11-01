@@ -8,7 +8,7 @@ export default function Autenticacao() {
     const navigate = useNavigate();
 
     function fnEnviar() {
-        if (nomeUsuario === usuarioCorreto) {
+        if (nomeUsuario === fnBuscarUsuario()) {
             navigate("/home")
         }
         else {
@@ -16,7 +16,7 @@ export default function Autenticacao() {
         }
     }
 
-    async function buscarUsuarios() {
+    async function fnBuscarUsuario() {
         const { data, error } = await supabase
             .from("usuarios")
             .select("nome")
