@@ -43,7 +43,7 @@ export default function Autenticacao() {
 
     async function fnSalvarUsuarioLocalmente() {
         try {
-            localStorage.setItem('usuario', 1);
+            localStorage.setItem('usuario', JSON.stringify(true));
             console.log("usuario logado")
         } catch (e) {
             console.error('Erro ao salvar usuário:', e);
@@ -63,6 +63,7 @@ export default function Autenticacao() {
 
             <div id="enviar">
                 <button onClick={fnEnviar}>Enviar</button>
+                <button onClick={() => navigate('/home')}>Apenas visualizar</button>
             </div>
         </>
     );
